@@ -1,8 +1,13 @@
 <template>
   <div class="login-panel">
     <h1 class="title">后台管理系统</h1>
-    <el-tabs type="border-card" stretch>
-      <el-tab-pane>
+    <el-tabs
+      type="border-card"
+      stretch
+      v-model="currentTab"
+      @click="changeKeepPassword()"
+    >
+      <el-tab-pane name="account">
         <template #label>
           <span>
             <el-icon style="vertical-align: middle">
@@ -13,7 +18,7 @@
         </template>
         <login-account ref="accountRef" />
       </el-tab-pane>
-      <el-tab-pane>
+      <el-tab-pane name="phone">
         <template #label>
           <span>
             <el-icon style="vertical-align: middle">
@@ -22,11 +27,11 @@
             手机登录
           </span>
         </template>
-        <login-phone />
+        <login-phone ref="phoneRef" />
       </el-tab-pane>
     </el-tabs>
     <div class="account-control">
-      <el-checkbox v-model="isKeepPassword" checked>记住密码</el-checkbox>
+      <el-checkbox v-model="isKeepPassword">记住密码</el-checkbox>
       <el-link type="primary">忘记密码</el-link>
     </div>
     <el-button type="primary" class="login-btn" @click="handleLoginClick">
@@ -49,17 +54,36 @@ export default defineComponent({
     LoginAccount
   },
   setup() {
+    // 1.定义属性
     const isKeepPassword = ref(true)
     const accountRef = ref<InstanceType<typeof LoginAccount>>()
+    const phoneRef = ref<InstanceType<typeof LoginPhone>>()
+    const currentTab = ref<string>('account')
 
+    // 2.定义方法
     const handleLoginClick = () => {
-      console.log('立即登录')
-      accountRef.value?.loginAction(isKeepPassword.value)
+      if (currentTab.value === 'account') {
+        console.log('立即登录')
+        accountRef.value?.loginAction(isKeepPassword.value)
+      } else {
+        console.log('phoneRef调用loginAction')
+        phoneRef.value?.loginAction()
+      }
+    }
+    const changeKeepPassword = () => {
+      if (currentTab.value === 'phone') {
+        isKeepPassword.value = false
+      } else {
+        isKeepPassword.value = true
+      }
     }
     return {
       isKeepPassword,
+      accountRef,
+      phoneRef,
+      currentTab,
       handleLoginClick,
-      accountRef
+      changeKeepPassword
     }
   }
 })

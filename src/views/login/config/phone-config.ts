@@ -29,7 +29,7 @@ export const rules = {
     },
     {
       // 正则规则
-      pattern: /^[0-9]{6}$/,
+      pattern: /^[0-9]{4}$/,
       message: '请输入正确的验证码',
       trigger: 'blur'
     }

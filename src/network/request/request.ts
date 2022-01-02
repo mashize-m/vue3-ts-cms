@@ -49,13 +49,13 @@ class MSZRequest {
     // 添加所有实例都有的拦截器
     this.instance.interceptors.request.use(
       (config) => {
-        console.log('所有实例都有的拦截器---请求成功的拦截')
+        // console.log('所有实例都有的拦截器---请求成功的拦截')
 
         if (this.showLoading) {
           this.loading = ElLoading.service({
             lock: true,
             text: 'Loading',
-            background: 'rgba(0, 0, 0, 0.5)'
+            background: 'rgba(0, 0, 0, 0.2)'
           })
         }
         // this.loading = ElLoading.service({
@@ -66,13 +66,13 @@ class MSZRequest {
         return config
       },
       (err) => {
-        console.log('所有实例都有的拦截器---请求失败的拦截')
+        // console.log('所有实例都有的拦截器---请求失败的拦截')
         return err
       }
     )
     this.instance.interceptors.response.use(
       (res) => {
-        console.log('所有实例都有的拦截器---响应成功的拦截')
+        // console.log('所有实例都有的拦截器---响应成功的拦截')
 
         // 将loading移除
         // this.loadingInstance?.close()
@@ -89,7 +89,7 @@ class MSZRequest {
         }
       },
       (err) => {
-        console.log('所有实例都有的拦截器---响应失败的拦截')
+        // console.log('所有实例都有的拦截器---响应失败的拦截')
         // 将loading移除
         this.loading?.close()
         // 例子：判断不同的HttpErrorCode显示不同的错误信息，可以用switch语句
