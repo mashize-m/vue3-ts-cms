@@ -1,5 +1,4 @@
 import { createApp } from 'vue'
-// import mszRequest from './network'
 import 'normalize.css'
 import './assets/css/index.less'
 
@@ -22,21 +21,3 @@ setupStore()
 // app.use(ElementPlus)
 app.mount('#app')
 // createApp(App).mount("#app");
-
-// interface DataType {
-//   data: any
-//   returnCode: string
-//   success: boolean
-// }
-// mszRequest
-//   .get<DataType>({
-//     url: '/home/multidata',
-//     method: 'GET',
-//     // showLoading: true
-//     showLoading: false
-//   })
-//   .then((res) => {
-//     console.log(res.data)
-//     console.log(res.returnCode)
-//     console.log(res.success)
-//   })
