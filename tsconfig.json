@@ -10,6 +10,9 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    // 在TS类型检测时推导报错---el-icon问题
+    // 元素隐式具有 “any” 类型，因为类型为 “string” 的表达式不能用于索引类型
+    // "suppressImplicitAnyIndexErrors": true,
     "sourceMap": true,
     "baseUrl": ".",
     "types": ["webpack-env"],

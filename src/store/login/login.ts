@@ -6,6 +6,7 @@ import {
   requestUserMenusByRoleId
 } from '@/network/login/login'
 import LocalCache from '@/utils/cache'
+import { mapMenusToRoutes } from '@/utils/map-menus'
 import router from '@/router/index'
 
 import { IAccount, UserInfo, Department, Role } from '@/network/login/type'
@@ -33,6 +34,15 @@ const loginModule: Module<ILoginState, IRootState> = {
     },
     changeUserMenus(state, userMenus: any) {
       state.userMenus = userMenus
+
+      // 根据菜单，找到对应的router的路由：userMenus -->  routes
+      const routes = mapMenusToRoutes(userMenus)
+      console.log(routes)
+
+      // 动态添加路由：将routes -->  router.main.children
+      routes.forEach((route) => {
+        router.addRoute('main', route)
+      })
     }
   },
   actions: {

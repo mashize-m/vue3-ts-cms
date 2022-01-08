@@ -10,7 +10,7 @@
       <el-tab-pane name="account">
         <template #label>
           <span>
-            <el-icon style="vertical-align: middle">
+            <el-icon style="top: 2px">
               <avatar />
             </el-icon>
             账号登录
@@ -21,7 +21,7 @@
       <el-tab-pane name="phone">
         <template #label>
           <span>
-            <el-icon style="vertical-align: middle">
+            <el-icon style="top: 2px">
               <iphone />
             </el-icon>
             手机登录
