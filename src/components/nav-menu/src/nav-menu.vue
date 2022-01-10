@@ -4,8 +4,9 @@
       <img class="img" src="~@/assets/img/logo.svg" alt="logo" />
       <span v-if="!collapse" class="title">Vue3+TS</span>
     </div>
+
     <el-menu
-      default-active="2"
+      :default-active="currentMenuId"
       class="el-menu-vertical"
       :collapse="collapse"
       background-color="#0c2135"
@@ -66,7 +67,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue'
+import { defineComponent, computed, ref } from 'vue'
 import { useStore } from '@/store'
 import {
   Monitor as ElIconMonitor,
@@ -74,7 +75,9 @@ import {
   Goods as ElIconGoods,
   ChatLineRound as ElIconChatLineRound
 } from '@element-plus/icons-vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
+
+import { pathMapToMenu } from '@/utils/map-menus'
 // vuex - typescript 兼容性比较差(缺少类型检测)  => 通过pinia库(第三方)使用
 
 export default defineComponent({
@@ -91,11 +94,20 @@ export default defineComponent({
     }
   },
   setup() {
+    // store
     const store = useStore()
     const userMenus = computed(() => store.state.login.userMenus)
 
+    // router
     const router = useRouter()
+    const route = useRoute()
+    const currentPath = route.path
 
+    // data，匹配页面刷新时，菜单项固定某一位置的bug
+    const menu = pathMapToMenu(userMenus.value, currentPath)
+    const currentMenuId = ref(menu.id + '')
+
+    // event handle 事件处理
     const handleMenuItemClick = (item: any) => {
       console.log(item)
       router.push({
@@ -104,6 +116,7 @@ export default defineComponent({
     }
     return {
       userMenus,
+      currentMenuId,
       handleMenuItemClick
     }
   }

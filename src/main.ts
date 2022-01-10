@@ -30,9 +30,10 @@ const app = createApp(App)
 //   )
 // }
 
-app.use(router)
 app.use(store)
 setupStore()
+
+app.use(router)
 // 全局使用
 // app.use(ElementPlus)
 app.mount('#app')
