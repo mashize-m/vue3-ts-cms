@@ -1,5 +1,8 @@
 <template>
   <div class="msz-form">
+    <div class="header">
+      <slot name="header"></slot>
+    </div>
     <el-form :label-width="labelWidth">
       <el-row>
         <template v-for="item in formItems" :key="item.label">
@@ -12,11 +15,21 @@
               <template
                 v-if="item.type === 'input' || item.type === 'password'"
               >
+                <!-- 不使用双向绑定 -->
                 <el-input
                   :placeholder="item.placeholder"
                   v-bind="item.otherOptions"
                   :show-password="item.type === 'password'"
+                  :model-value="modelValue[`${item.field}`]"
+                  @update:modelValue="handleValueChange($event, item.field)"
                 >
+                  <!-- 双向绑定 -->
+                  <!-- <el-input
+                  :placeholder="item.placeholder"
+                  v-bind="item.otherOptions"
+                  :show-password="item.type === 'password'"
+                  v-model="formData[`${item.field}`]"
+                > -->
                 </el-input>
               </template>
               <template v-else-if="item.type === 'select'">
@@ -24,6 +37,8 @@
                   :placeholder="item.placeholder"
                   v-bind="item.otherOptions"
                   style="width: 100%"
+                  :model-value="modelValue[`${item.field}`]"
+                  @update:modelValue="handleValueChange($event, item.field)"
                 >
                   <el-option
                     v-for="option in item.options"
@@ -38,6 +53,8 @@
                 <el-date-picker
                   style="width: 100%"
                   v-bind="item.otherOptions"
+                  :model-value="modelValue[`${item.field}`]"
+                  @update:modelValue="handleValueChange($event, item.field)"
                 ></el-date-picker>
               </template>
             </el-form-item>
@@ -45,15 +62,22 @@
         </template>
       </el-row>
     </el-form>
+    <div class="footer">
+      <slot name="footer"></slot>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { defineComponent, PropType, ref, watch } from 'vue'
 import { IFormItem } from '../types'
 
 export default defineComponent({
   props: {
+    modelValue: {
+      type: Object,
+      required: true
+    },
     formItems: {
       type: Array as PropType<IFormItem[]>,
       default: () => []
@@ -77,8 +101,32 @@ export default defineComponent({
       })
     }
   },
-  setup() {
-    return {}
+  emits: ['update:modelValue'],
+  setup(props, { emit }) {
+    // 方案一：不使用双向绑定
+    const handleValueChange = (value: any, field: string) => {
+      emit('update:modelValue', { ...props.modelValue, [field]: value })
+    }
+
+    // 方案二：双向绑定方案
+    // const formData = ref({ ...props.modelValue })
+
+    // watch(
+    //   formData,
+    //   (newValue) => {
+    //     console.log(newValue)
+
+    //     emit('update:modelValue', newValue)
+    //   },
+    //   {
+    //     deep: true
+    //   }
+    // )
+
+    return {
+      handleValueChange
+      // formData
+    }
   }
 })
 </script>

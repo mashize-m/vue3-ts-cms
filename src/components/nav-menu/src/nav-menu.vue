@@ -109,7 +109,7 @@ export default defineComponent({
 
     // event handle 事件处理
     const handleMenuItemClick = (item: any) => {
-      console.log(item)
+      // console.log(item)
       router.push({
         path: item.url ?? '/not-found'
       })

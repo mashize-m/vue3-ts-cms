@@ -25,7 +25,7 @@ const loginModule: Module<ILoginState, IRootState> = {
   },
   mutations: {
     changeToken(state, token: string) {
-      console.log(token)
+      // console.log(token)
 
       state.token = token
     },
@@ -37,7 +37,7 @@ const loginModule: Module<ILoginState, IRootState> = {
 
       // 根据菜单，找到对应的router的路由：userMenus -->  routes
       const routes = mapMenusToRoutes(userMenus)
-      console.log(routes)
+      // console.log(routes)
 
       // 动态添加路由：将routes -->  router.main.children
       routes.forEach((route) => {
@@ -51,7 +51,7 @@ const loginModule: Module<ILoginState, IRootState> = {
       console.log('执行accountLoginAction', payload)
       // 1.实现登录逻辑
       const loginResult = await accountLoginRequest(payload)
-      console.log(loginResult)
+      // console.log(loginResult)
       const { id, token } = loginResult.data
       commit('changeToken', token)
       // 保存token到本地
@@ -59,7 +59,7 @@ const loginModule: Module<ILoginState, IRootState> = {
 
       // 2.请求用户信息数据
       const userInfoResult = await requestUserInfoById(id)
-      console.log(userInfoResult)
+      // console.log(userInfoResult)
       const userInfo = userInfoResult.data
       commit('changeUserInfo', userInfo)
       LocalCache.setCache('userInfo', userInfo)
@@ -67,7 +67,7 @@ const loginModule: Module<ILoginState, IRootState> = {
       // 3.请求用户菜单
       const userMenuResult = await requestUserMenusByRoleId(userInfo.role.id)
       const userMenus = userMenuResult.data
-      console.log(userMenus)
+      // console.log(userMenus)
       commit('changeUserMenus', userMenus)
       LocalCache.setCache('userMenus', userMenus)
 

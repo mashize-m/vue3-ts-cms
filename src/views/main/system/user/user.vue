@@ -1,25 +1,45 @@
 <template>
   <div class="user">
-    <div class="search">
-      <msz-form v-bind="searchFormConfig"></msz-form>
-    </div>
-    <div class="content"></div>
+    <page-search
+      :searchFormConfig="searchFormConfig"
+      @resetBtnClick="handleResetBtnClick"
+      @queryBtnClick="handleQueryBtnClick"
+    ></page-search>
+    <page-content
+      ref="pageContentRef"
+      :contentTableConfig="contentTableConfig"
+      pageName="users"
+    ></page-content>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import MszForm from '@/base-ui/form'
+
+import PageSearch from '@/components/page-search'
+import PageContent from '@/components/page-content'
+
 import { searchFormConfig } from './config/search.config'
+import { contentTableConfig } from './config/content.config'
+
+import { usePageSearch } from '@/hooks/use-page-search'
 
 export default defineComponent({
   name: 'user',
   components: {
-    MszForm
+    PageSearch,
+    PageContent
   },
   setup() {
+    const [pageContentRef, handleResetBtnClick, handleQueryBtnClick] =
+      usePageSearch()
+
     return {
-      searchFormConfig
+      searchFormConfig,
+      contentTableConfig,
+      handleResetBtnClick,
+      handleQueryBtnClick,
+      pageContentRef
     }
   }
 })

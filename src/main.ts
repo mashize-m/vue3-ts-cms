@@ -17,6 +17,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import { setupStore } from './store/index'
+import { globalRegister } from './global'
 
 const app = createApp(App)
 // 统一注册el-icon图标
@@ -30,11 +31,15 @@ const app = createApp(App)
 //   )
 // }
 
+// 注册全局自定义属性
+app.use(globalRegister)
+
 app.use(store)
 setupStore()
 
 app.use(router)
 // 全局使用
 // app.use(ElementPlus)
+
 app.mount('#app')
 // createApp(App).mount("#app");

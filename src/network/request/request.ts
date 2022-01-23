@@ -102,7 +102,7 @@ class MSZRequest {
   }
 
   // 单独的某一请求，添加拦截器
-  request<T>(config: MSZRequestConfig<T>): Promise<T> {
+  request<T = any>(config: MSZRequestConfig<T>): Promise<T> {
     return new Promise((resolve, reject) => {
       if (config.interceptors?.requestInterceptor) {
         config = config.interceptors?.requestInterceptor(config)
@@ -136,17 +136,17 @@ class MSZRequest {
     })
   }
 
-  get<T>(config: MSZRequestConfig<T>): Promise<T> {
+  get<T = any>(config: MSZRequestConfig<T>): Promise<T> {
     return this.request<T>({ ...config, method: 'GET' })
   }
 
-  post<T>(config: MSZRequestConfig<T>): Promise<T> {
+  post<T = any>(config: MSZRequestConfig<T>): Promise<T> {
     return this.request<T>({ ...config, method: 'POST' })
   }
-  delete<T>(config: MSZRequestConfig<T>): Promise<T> {
+  delete<T = any>(config: MSZRequestConfig<T>): Promise<T> {
     return this.request<T>({ ...config, method: 'DELETE' })
   }
-  patch<T>(config: MSZRequestConfig<T>): Promise<T> {
+  patch<T = any>(config: MSZRequestConfig<T>): Promise<T> {
     return this.request<T>({ ...config, method: 'PATCH' })
   }
 }
