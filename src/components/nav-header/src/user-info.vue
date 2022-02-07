@@ -10,7 +10,7 @@
       </span>
       <template #dropdown>
         <el-dropdown-menu>
-          <el-dropdown-item>
+          <el-dropdown-item @click="handleExitClick">
             <!-- <el-icon color="#409EFC">
               <circle-close />
             </el-icon> -->
@@ -28,6 +28,8 @@
 import { defineComponent, computed } from 'vue'
 import { useStore } from '@/store'
 // import { ArrowDownBold, CircleClose } from '@element-plus/icons-vue'
+import { useRouter } from 'vue-router'
+import localCache from '@/utils/cache'
 
 export default defineComponent({
   components: {
@@ -42,9 +44,16 @@ export default defineComponent({
       return store.state.login.userInfo.name
     })
 
+    const router = useRouter()
+    const handleExitClick = () => {
+      localCache.deleteCache('token')
+      router.push('/main')
+    }
+
     return {
       name,
-      circleUrl
+      circleUrl,
+      handleExitClick
     }
   }
 })

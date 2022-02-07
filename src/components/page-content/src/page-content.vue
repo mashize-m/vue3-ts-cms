@@ -9,12 +9,13 @@
     >
       <!-- header插槽 -->
       <template #headerHandler>
-        <el-button @click="handleNewUser" type="primary">
+        <el-button v-if="isCreate" type="primary" @click="handleNewClick">
           <el-icon><user-filled /></el-icon>
+          新建数据
         </el-button>
-        <el-button @click="handleNewUser">
+        <!-- <el-button>
           <el-icon><refresh /></el-icon>
-        </el-button>
+        </el-button> -->
       </template>
       <!-- 列中的插槽 -->
       <template #enable="scope">
@@ -45,13 +46,23 @@
           {{ $filters.formatTime(scope.row.updateAt) }}
         </span>
       </template>
-      <template #handler>
+      <template #handler="scope">
         <div class="handle-btns">
-          <el-button size="default" type="text">
+          <el-button
+            v-if="isUpdate"
+            size="mini"
+            type="text"
+            @click="handleEditClick(scope.row)"
+          >
             <el-icon><edit /></el-icon>
             编辑
           </el-button>
-          <el-button size="default" type="text">
+          <el-button
+            v-if="isDelete"
+            size="mini"
+            type="text"
+            @click="handleDeleteClick(scope.row)"
+          >
             <el-icon><delete /></el-icon>
             删除
           </el-button>
@@ -74,6 +85,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref, watch } from 'vue'
 import { useStore } from '@/store'
+import { usePermission } from '@/hooks/use-permission'
 
 import MszTable from '@/base-ui/table'
 
@@ -84,7 +96,7 @@ export default defineComponent({
     MszTable,
     Edit,
     Delete,
-    Refresh,
+    // Refresh,
     UserFilled
   },
   props: {
@@ -97,19 +109,30 @@ export default defineComponent({
       required: true
     }
   },
-  setup(props) {
+  emits: ['newBtnClick', 'editBtnClick'],
+  setup(props, { emit }) {
     const store = useStore()
 
+    // 0.获取操作的权限
+    const isCreate = usePermission(props.pageName, 'create')
+    const isUpdate = usePermission(props.pageName, 'update')
+    const isDelete = usePermission(props.pageName, 'delete')
+    const isQuery = usePermission(props.pageName, 'query')
+
     // 1.双向绑定pageInfo
-    const pageInfo = ref({ currentPage: 0, pageSize: 10 })
+    const pageInfo = ref({ currentPage: 1, pageSize: 10 })
     watch(pageInfo, () => getPageData())
 
     // 2.发送网络请求
     const getPageData = (queryInfo: any = {}) => {
+      // 发送网络前，判断是否有对应权限
+      // 没有权限
+      if (!isQuery) return
+      // 有权限
       store.dispatch('system/getPageListAction', {
         pageName: props.pageName,
         queryInfo: {
-          offset: pageInfo.value.currentPage * pageInfo.value.pageSize,
+          offset: (pageInfo.value.currentPage - 1) * pageInfo.value.pageSize,
           size: pageInfo.value.pageSize,
           ...queryInfo
         }
@@ -132,12 +155,28 @@ export default defineComponent({
     const otherPropSlots = props.contentTableConfig?.propList.filter(
       (item: any) => {
         if (item.slotName === 'status') return false
+        if (item.slotName === 'enable') return false
         if (item.slotName === 'createAt') return false
         if (item.slotName === 'updateAt') return false
         if (item.slotName === 'handler') return false
         return true
       }
     )
+
+    // 5.删除、编辑、新建操作
+    const handleDeleteClick = (item: any) => {
+      // console.log(item)
+      store.dispatch('system/deletePageDataAction', {
+        pageName: props.pageName,
+        id: item.id
+      })
+    }
+    const handleNewClick = () => {
+      emit('newBtnClick')
+    }
+    const handleEditClick = (item: any) => {
+      emit('editBtnClick', item)
+    }
 
     return {
       Edit,
@@ -148,7 +187,13 @@ export default defineComponent({
       getPageData,
       dataCount,
       pageInfo,
-      otherPropSlots
+      otherPropSlots,
+      isCreate,
+      isUpdate,
+      isDelete,
+      handleDeleteClick,
+      handleNewClick,
+      handleEditClick
     }
   }
 })

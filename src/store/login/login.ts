@@ -6,7 +6,7 @@ import {
   requestUserMenusByRoleId
 } from '@/network/login/login'
 import LocalCache from '@/utils/cache'
-import { mapMenusToRoutes } from '@/utils/map-menus'
+import { mapMenusToRoutes, mapMenusToPermissions } from '@/utils/map-menus'
 import router from '@/router/index'
 
 import { IAccount, UserInfo, Department, Role } from '@/network/login/type'
@@ -20,7 +20,8 @@ const loginModule: Module<ILoginState, IRootState> = {
     return {
       token: '',
       userInfo: {},
-      userMenus: []
+      userMenus: [],
+      permissions: []
     }
   },
   mutations: {
@@ -43,10 +44,14 @@ const loginModule: Module<ILoginState, IRootState> = {
       routes.forEach((route) => {
         router.addRoute('main', route)
       })
+
+      // 获取用户按钮权限
+      const permissions = mapMenusToPermissions(userMenus)
+      state.permissions = permissions
     }
   },
   actions: {
-    async accountLoginAction({ commit }, payload: IAccount) {
+    async accountLoginAction({ commit, dispatch }, payload: IAccount) {
       // commit('accountLoginAction', payload);
       console.log('执行accountLoginAction', payload)
       // 1.实现登录逻辑
@@ -56,6 +61,9 @@ const loginModule: Module<ILoginState, IRootState> = {
       commit('changeToken', token)
       // 保存token到本地
       LocalCache.setCache('token', token)
+
+      // 发送初始化请求（完整的role/department）
+      dispatch('getInitialDataAction', null, { root: true })
 
       // 2.请求用户信息数据
       const userInfoResult = await requestUserInfoById(id)
@@ -79,10 +87,13 @@ const loginModule: Module<ILoginState, IRootState> = {
       // commit('accountLoginAction', payload);
       console.log('phoneLoginAction', payload)
     },
-    loadLocalLogin({ commit }) {
+    loadLocalLogin({ commit, dispatch }) {
       const token = LocalCache.getCache('token')
       if (token) {
         commit('changeToken', token)
+
+        // 发送初始化请求（完整的role/department）
+        dispatch('getInitialDataAction', null, { root: true })
       }
       const userInfo = LocalCache.getCache('userInfo')
       if (userInfo) {
