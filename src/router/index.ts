@@ -34,6 +34,7 @@ const router = createRouter({
   history: createWebHashHistory()
 })
 
+// 导航守卫：可以做根据菜单动态生成路由
 router.beforeEach((to) => {
   if (to.path !== '/login') {
     const token = LocalCache.getCache('token')

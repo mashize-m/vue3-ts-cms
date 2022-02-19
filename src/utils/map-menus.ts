@@ -3,6 +3,7 @@ import { RouteRecordRaw } from 'vue-router'
 
 let firstMenu: any = null
 
+// store/login/login.ts
 export function mapMenusToRoutes(userMenus: any[]): RouteRecordRaw[] {
   const routes: RouteRecordRaw[] = []
 
